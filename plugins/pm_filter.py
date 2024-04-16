@@ -74,7 +74,23 @@ async def pm_text(bot, message):
     content = message.text
     user = message.from_user.first_name
     user_id = message.from_user.id
+    if AUTH_CHANNEL and not await is_subscribed(client, message):
+        try:
+            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in Forcesub channel")
+            return
+        btn = [
+            [
+                InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
+            ],[
+                InlineKeyboardButton('🤔 Why Iam Join🤔', callback_data='sinfo')
+            ]
+        ]
     if content.startswith("/") or content.startswith("#"): return  # ignore commands and hashtags
+    if PM_SEARCH:
+        await auto_filter(client, message)
+        return 
     if user_id in ADMINS: return # ignore admins
     await message.reply_text(
          text=f"<b>ʜᴇʏ {user} 😍 ,\n\nʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ᴍᴏᴠɪᴇs ꜰʀᴏᴍ ʜᴇʀᴇ. ʀᴇǫᴜᴇsᴛ ɪᴛ ɪɴ ᴏᴜʀ <a href=https://t.me/Aklinks_2>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ</a> ᴏʀ ᴄʟɪᴄᴋ ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ 👇</b>",   
